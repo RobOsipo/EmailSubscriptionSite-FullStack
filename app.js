@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const request = require('request')
 const https = require('https')
-
+require('dotenv').config()
 const app = express();
 
 app.use(express.static('public'))
@@ -38,15 +38,15 @@ app.post('/', (req, res) => {
 
     const options = {
         method: "POST",
-        auth: "robosipo:e42404130c7db29fe50fdef310a6e88f-us14"
+        auth: `robosipo:${process.env.API}`
     }
 
     const request = https.request(url, options, (response) => {
 
         if (response.statusCode === 200){
-            res.send('successfully subscribed!')
+            res.sendFile(__dirname + '/success.html')
         } else{
-            res.send('an error occured while signing up, please try again!')
+            res.sendFile(__dirname + '/failure.html')
         }
 
         response.on("data", (data) => {
@@ -61,7 +61,9 @@ app.post('/', (req, res) => {
 
 
 
-
+app.post('/failure', (req, res) => {
+    res.redirect('/')
+})
 
 
 
@@ -70,5 +72,3 @@ app.listen(3001, (req, res) => {
     console.log('listening on port 3001')
 })
 
-// e42404130c7db29fe50fdef310a6e88f-us14 apiKey
-// 6ad3aecbb0 list
